@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import {
   DiffSourceToggleWrapper,
   MDXEditor,
@@ -6,10 +5,8 @@ import {
   diffSourcePlugin,
   headingsPlugin,
   toolbarPlugin,
-  $createGenericHTMLNode,
 } from '@mdxeditor/editor'
 import { $patchStyleText } from '@lexical/selection'
-import {  $getSelection, $isRangeSelection, $isTextNode } from 'lexical'
 
 const markdownWithSpan = `
   # Hello World
@@ -43,9 +40,7 @@ export default function App() {
 
 const HTMLToolbarComponent = () => {
   const [currentSelection, activeEditor] = corePluginHooks.useEmitterValues('currentSelection', 'activeEditor')
-  useEffect(()=>{
-    console.log('currentSelection', currentSelection)
-  }, [currentSelection])
+ 
   
   return (
     <>

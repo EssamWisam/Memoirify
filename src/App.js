@@ -1,249 +1,41 @@
 import React, { useEffect } from 'react'
-import '@mdxeditor/editor/style.css'
-import { MDXEditor } from '@mdxeditor/editor/MDXEditor'
 import './index.css'
-import { FaMagic } from "react-icons/fa";
+import EditorPage from './pages/EditorPage/EditorPage'
 
-import {
-  toolbarPlugin,
-  listsPlugin,
-  quotePlugin,
-  headingsPlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  imagePlugin,
-  tablePlugin,
-  thematicBreakPlugin,
-  frontmatterPlugin,
-  codeBlockPlugin,
-  codeMirrorPlugin,
-  directivesPlugin,
-  AdmonitionDirectiveDescriptor,
-  diffSourcePlugin,
-  markdownShortcutPlugin,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  CodeToggle,
-  CreateLink,
-  InsertCodeBlock,
-  InsertImage,
-  InsertTable,
-  InsertThematicBreak,
-  ListsToggle,
-  DiffSourceToggleWrapper,
-  Button,
-} from '@mdxeditor/editor'
-
-
-async function imageUploadHandler(image) {
-  // Will work when there is a backend of sorts...
-  const formData = new FormData()
-  formData.append('image', image)
-  // send the file to your server and return 
-  // the URL of the uploaded image in the response
-  const response = await fetch('./uploads', {
-    method: 'POST',
-    body: formData
-  })
-
-  const json = (await response.json())
-  alert(json)
-  return json.url
-}
-
-
-async function processTextWithFlask(inputText) {
-  try {
-    const response = await fetch(
-      'http://127.0.0.1:5001/process_text', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', },
-      body: JSON.stringify({
-        text: inputText,
-      }),
-    });
-
-    if (!response.ok) throw new Error('Network response was not ok');
-
-    const data = await response.json();
-    const processedText = data.processed_text;
-
-    return processedText;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error; // Re-throw the error to be caught by the caller if needed
-  }
-}
-
-
-
-async function processText(text) {
-  try {
-    var processedText = await processTextWithFlask(text);
-    return processedText;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-
-
-function getSelectedText() {
-  var selectedText = "";
-  var selection = window.getSelection();
-
-  if (selection.rangeCount > 0) {
-    var range = selection.getRangeAt(0);
-
-    // Create a div element to contain the selected content
-    var container = document.createElement("div");
-    container.appendChild(range.cloneContents());
-
-    // Traverse the container and collect text content with new lines
-    selectedText = traverseNodes(container);
-  }
-
-  return selectedText;
-}
-
-function traverseNodes(node) {
-  var text = "";
-
-  // If it's a text node, append its content to the result
-  if (node.nodeType === Node.TEXT_NODE) {
-    text += node.nodeValue;
-  } else {
-    // If it's an element node, traverse its child nodes
-    for (var i = 0; i < node.childNodes.length; i++) {
-      text += traverseNodes(node.childNodes[i]);
-    }
-
-    // If it's a block-level element, add a new line
-    if (isBlockElement(node)) {
-      text += '\n\n';
-    }
-  }
-
-  return text;
-}
-
-function isBlockElement(element) {
-  var blockElements = ['P', 'DIV', 'BR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'HR', 'ADDRESS', 'BLOCKQUOTE', 'PRE', 'DL', 'DT', 'DD', 'TABLE', 'CAPTION', 'THEAD', 'TFOOT', 'TBODY', 'COLGROUP', 'COL', 'TR', 'TH', 'TD', 'FIELDSET', 'LEGEND', 'SECTION', 'article', 'aside', 'details', 'figcaption', 'figure', 'footer', 'header', 'hgroup', 'menu', 'nav', 'article', 'section'];
-  return blockElements.includes(element.nodeName);
-}
-
-async function findAndTransform(largeString, smallString, transformFunction, callback = (res) => {}) {
-  const trimmedSmallString = smallString.trim();
-
-  // Escape special characters in the trimmedSmallString
-  const escapedSmallString = trimmedSmallString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-  // Use match with a regular expression to find all occurrences
-  const matches = largeString.match(new RegExp(escapedSmallString, 'g')) || [];
-
-  if (matches.length === 0) {
-    console.log("No matches found");
-    return largeString;
-  }
-
-  if (matches.length > 1) {
-    console.warn("Multiple matches found. Operating on the first match.");
-  }
-
-  const lastMatch = matches[0];
-  const transformedValue = await transformFunction(lastMatch);
-
-  const result = largeString.replace(lastMatch, transformedValue);
-
-  callback(result);
-  return result;
-}
 
 function App() {
 
   const markdown = `
-  The dominant paradigm of natural language generation systems hinges on probabilistic neural lan-
-  guage models (Radford et al., 2019; Zhang et al., 2022), which permit evaluating the probability
-  of any given text sequence as well as generating novel ones using various decoding strategies upon
-  learned distributions (Holtzman et al., 2019; Meister et al., 2023b). Language modeling, the process
-  of aligning model distribution with that of human language, is usually formulated as a sequence
-  prediction task in which maximum likelihood estimation (MLE) is typically adopted as the training
-  objective owing to its simplicity and intuitiveness.
+  An ‘event’ can describe any state with a timestamp. Some events are directly observable (death,
+    crime reports, flooding) while others represent latent changes in an underlying process (flares in
+    disease, social unrest, a cyber-attack). Predicting events—when, whether and where they occur—is
+    an increasingly important task in science, industry and public policy.
+    This project focusses on the interconnected problems of measuring and predicting health and
+    well-being. Health and well-being exist at two levels: within the individual, where we may observe or
+    measure a patient’s genetics, medical history and life course; and at the societal level, where the effect
+    of the physical and socio-political environment might be apparent. Many public health epidemiologists
+    hold that societal welfare and individual well-being are intrinsically linked. It may follow, therefore,
+    that learning the dynamics of socio-political events can aid understanding of individual well-being,
+    and vice versa.
+    We consider the world of events from two perspectives. ‘Events as output’ encompasses time-to-
+    event analysis, where the task is to estimate the risk of an (adverse) event or the time until it occurs.
+    ‘Events as input’ encompasses intensive longitudinal data analysis or the analysis of irregularly-
+    spaced time series. In both areas, a key challenge is extracting useful features from high-dimensional,
+    complex or dependent data structures to predict an outcome, be it dynamic or static. Existing
+    machine learning tools and methods may need to be extended and adapted to handle such tasks.
+    The project explores methods of selecting and extracting features from whole genome data for
+    survival problems (individual health), the effect of different levels of data aggregation on spatio-
+    temporal models (societal health) and the challenges behind building a transparent, explainable and
+    useful data science pipeline for such complex temporal data. A particular focus is paid to automation
+    of the data cleaning process, as well as to effective combination of scientific and machine learning
+    knowledge on problems where data are messy, sparse or only available in aggregate form.
+    Utility of the developed models and pipelines will be demonstrated through the collation of ap-
+    propriate benchmarks and open data sets and application to several real-world problems, ultimately
+    culminating in implementation as tools designed for the use of stakeholders and policymakers.    
   `
 
-const MagicButton = ({ onSetMarkdown, onGetMarkdown }) => {
-  const handleButtonClick = async () => {
-    let selectedText = getSelectedText();
-    console.log("A: " + selectedText)
-    let wholeText = onGetMarkdown();
-    console.log("B: " + wholeText)
-    try {
-      const result = await findAndTransform(wholeText, selectedText, processText, onSetMarkdown);
-      onSetMarkdown(onGetMarkdown());
-      console.log("C: " + onGetMarkdown());
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
-    <Button onClick={handleButtonClick}>
-      <FaMagic />
-    </Button>
-  );
-};
- 
-
-
-
-  const editorRef = React.createRef();
-
-
-  const allPlugins = (diffMarkdown, editorRef, markdowno, setMarkdowno) => [
-    toolbarPlugin({
-      toolbarContents: () => (<>
-        <DiffSourceToggleWrapper>
-          <UndoRedo />
-          <BoldItalicUnderlineToggles />
-          <CodeToggle />
-          <CreateLink />
-          <ListsToggle />
-          <InsertCodeBlock />
-          <InsertImage />
-          <InsertTable />
-          <InsertThematicBreak />
-          <MagicButton onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown); }} onGetMarkdown={() => editorRef.current?.getMarkdown()}/> 
-        </DiffSourceToggleWrapper>
-      </>)
-    }),
-    listsPlugin(),
-    quotePlugin(),
-    headingsPlugin(),
-    linkPlugin(),
-    linkDialogPlugin(),
-    // eslint-disable-next-line @typescript-eslint/require-await
-    imagePlugin({ imageUploadHandler }),
-    tablePlugin(),
-    thematicBreakPlugin(),
-    frontmatterPlugin(),
-    codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
-    codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', tsx: 'TypeScript' } }),
-    directivesPlugin({ directiveDescriptors: [AdmonitionDirectiveDescriptor] }),
-    diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown }),
-    markdownShortcutPlugin(),
-  ]
-
-  return (
-    <div id="editableDiv" style={{fontFamily:'Avenir'}} >
-      <MDXEditor
-        markdown={markdown}
-        onChange={(md) => {console.log(md)}}
-        placeholder="Type some content here"
-        autoFocus={true} 
-        className="dark-theme dark-editor"
-        ref={editorRef}
-        contentEditableClassName="prose max-w-full font-sans" plugins={allPlugins("# Initial Boom", editorRef)} />
-    </div>
+    <EditorPage markdown={markdown}/>
   )
 }
 
