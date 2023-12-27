@@ -5,7 +5,7 @@ import './editor.css'
 import { FaMagic } from "react-icons/fa";
 import { imageUploadHandler, processText } from './api';
 import { getSelectedText, findAndTransform } from './logic';
-import { $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
+import { $patchStyleText, $getSelectionStyleValueForProperty } from '@l exical/selection'
 
 import {
   toolbarPlugin,
@@ -43,6 +43,25 @@ import { IconContext } from 'react-icons';
 const HighlightMode = () => {
   const [currentSelection, activeEditor] = corePluginHooks.useEmitterValues('currentSelection', 'activeEditor');
   const [highlightMode, setHighlightMode] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // Check if Ctrl key is pressed and the '1' key is pressed
+      if (event.ctrlKey && event.key === '1') {
+        setHighlightMode((prev) => !prev);
+        console.log("hey")
+      }
+    };
+
+    // Add the event listener when the component mounts
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   useEffect(() => {
     if (activeEditor !== null && currentSelection !== null && highlightMode) {
       activeEditor.update(() => {
