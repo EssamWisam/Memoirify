@@ -30,18 +30,9 @@ import {
   InsertTable,
   InsertThematicBreak,
   ListsToggle,
-  NestedLexicalEditor,
-  KitchenSinkToolbar,
   DiffSourceToggleWrapper,
-  directivesPluginHooks,
-  DialogButton,
   Button,
-  GenericJsxEditor,
-  jsxPluginHooks,
-  GenericDirectiveEditor,
-  jsxPlugin
 } from '@mdxeditor/editor'
-import { VscRunAll } from "react-icons/vsc";
 
 
 async function imageUploadHandler(image) {
@@ -59,50 +50,6 @@ async function imageUploadHandler(image) {
   alert(json)
   return json.url
 }
-
-const CalloutDirectiveDescriptor = {
-  name: 'streamline',
-  testNode(node) {
-    return node.name === 'streamline'
-  },
-  attributes: [],
-  hasChildren: true,
-  Editor: (props) => {
-    const [content, setContent] = React.useState(props?.mdastNode?.children?.[0]?.children?.[0]?.value)
-    const [key, setKey] = React.useState(0);
-
-    React.useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const result = await processText(content);
-          setContent(result);
-          setKey(key + 1);
-        } catch (error) {
-          console.error('Error running example:', error);
-        }
-      };
-      fetchData(content);
-
-    }, []);
-
-
-    return (
-      <div key={key} className='streamline-wrapper' style={{ border: '1px solid transparent', padding: 8, margin: 8 }}>
-       {<NestedLexicalEditor
-          block
-          getContent={(node) => { node.children[0].children[0].value = content; return node.children; }}
-          getUpdatedMdastNode={(mdastNode, children) => {
-            return { ...mdastNode, children }
-          }}
-        />}
-
-      </div>
-    )
-  }
-}
-
-
-
 
 
 async function processTextWithFlask(inputText) {
@@ -247,26 +194,10 @@ const MagicButton = ({ onSetMarkdown, onGetMarkdown }) => {
 };
  
 
-  const CompileButton = ({ onSetMarkdown }) => {
-    
-    const handleButtonClick = () => {
-      onSetMarkdown();
-    };
-  
-    return (
-      <Button onClick={handleButtonClick}>
-        <VscRunAll />
-      </Button>
-    );
-  };
 
 
   const editorRef = React.createRef();
-  const [markdowno, setMarkdowno] = React.useState(`Just come on. Do it now and come on. Please I need to sleep.`)
 
-  useEffect(()=>{
-    editorRef.current?.setMarkdown(markdowno);
-  },[markdowno])
 
   const allPlugins = (diffMarkdown, editorRef, markdowno, setMarkdowno) => [
     toolbarPlugin({
@@ -281,12 +212,7 @@ const MagicButton = ({ onSetMarkdown, onGetMarkdown }) => {
           <InsertImage />
           <InsertTable />
           <InsertThematicBreak />
-          {/* <MagicButton onSetMarkdown={(newMarkdown) => { setMarkdowno(newMarkdown); }} onGetMarkdown={() => markdowno}/> */}
           <MagicButton onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown); }} onGetMarkdown={() => editorRef.current?.getMarkdown()}/> 
-          {/* <CompileButton onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown); }} onGetMarkdown={() => editorRef.current?.getMarkdown().replace(/\\/g, '')}/>  */}
-          <CompileButton onSetMarkdown={() => {setMarkdowno(editorRef.current?.getMarkdown().replace(/\\/g, ''))}} /> 
-
-          {/* <CompileButton onSetMarkdown={(newMarkdown) => { setMarkdowno(newMarkdown.replace(/\\/g, '')); }} markdown={markdowno}/> */}
         </DiffSourceToggleWrapper>
       </>)
     }),
@@ -302,24 +228,21 @@ const MagicButton = ({ onSetMarkdown, onGetMarkdown }) => {
     frontmatterPlugin(),
     codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
     codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', tsx: 'TypeScript' } }),
-    directivesPlugin({ directiveDescriptors: [AdmonitionDirectiveDescriptor, CalloutDirectiveDescriptor] }),
+    directivesPlugin({ directiveDescriptors: [AdmonitionDirectiveDescriptor] }),
     diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown }),
     markdownShortcutPlugin(),
   ]
 
   return (
     <div id="editableDiv" style={{fontFamily:'Avenir'}} >
-      <button onClick={() => { editorRef.current?.setMarkdown(editorRef.current?.getMarkdown().replace(/\\/g, '')); }}>Set new markdown</button>
       <MDXEditor
-        markdown={markdowno}
+        markdown={markdown}
         onChange={(md) => {console.log(md)}}
         placeholder="Type some content here"
         autoFocus={true} 
         className="dark-theme dark-editor"
         ref={editorRef}
-        //markdown={markdown}         // initial
-        //onChange={console.log} 
-        contentEditableClassName="prose max-w-full font-sans" plugins={allPlugins("# Initial Boom", editorRef, markdowno, setMarkdowno)} />
+        contentEditableClassName="prose max-w-full font-sans" plugins={allPlugins("# Initial Boom", editorRef)} />
     </div>
   )
 }
