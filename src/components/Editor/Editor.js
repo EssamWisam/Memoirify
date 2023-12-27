@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import '@mdxeditor/editor/style.css'
 import { MDXEditor } from '@mdxeditor/editor/MDXEditor'
 import './editor.css'
 import { FaMagic } from "react-icons/fa";
 import { imageUploadHandler, processText } from './api';
 import { getSelectedText, findAndTransform } from './logic';
+import { $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
 
 import {
   toolbarPlugin,
@@ -34,12 +35,49 @@ import {
   ListsToggle,
   DiffSourceToggleWrapper,
   Button,
-} from '@mdxeditor/editor'
+  corePluginHooks
+} from '@mdxeditor/editor';
+import { MdInvertColors } from "react-icons/md";
+import { IconContext } from 'react-icons';
+
+const HighlightMode = () => {
+  const [currentSelection, activeEditor] = corePluginHooks.useEmitterValues('currentSelection', 'activeEditor');
+  const [highlightMode, setHighlightMode] = useState(false);
+  useEffect(() => {
+    if (activeEditor !== null && currentSelection !== null && highlightMode) {
+      activeEditor.update(() => {
+        try {
+          let current = $getSelectionStyleValueForProperty(currentSelection, 'background-color', -1);
+          console.log(currentSelection);
+          if (current !== '#3498db') {
+            $patchStyleText(currentSelection, { 'background-color': '#3498db' });
+          } else {
+            //$patchStyleText(currentSelection, { 'background-color': undefined });
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    }
+  }, [currentSelection, highlightMode, activeEditor]);
+
+  return (
+    <>
+      <IconContext.Provider value={{ size: '1.5em', style: { verticalAlign: 'middle' } }}>
+        <MdInvertColors
+          onClick={() => setHighlightMode((prev) => !prev)}
+          style={{ cursor: 'pointer', color: highlightMode ? '#3498db' : 'inherit' }}
+        />
+      </IconContext.Provider>
+    </>
+  );
+};
+
 
 
 
 const MDEditor = ({markdown}) => {
-   
+
     const editorRef = React.createRef();
   
     return (
@@ -89,6 +127,7 @@ const allPlugins = (diffMarkdown, editorRef) => [
           <InsertTable />
           <InsertThematicBreak />
           <MagicButton onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown.replace(/<!---->/g, '<br/>')); }} onGetMarkdown={() => editorRef.current?.getMarkdown()}/> 
+          <HighlightMode/>
         </DiffSourceToggleWrapper>
       </>)
     }),

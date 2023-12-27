@@ -44,13 +44,13 @@ def get_keywords(sentence):
    # Create a pattern to match any word that has a hyphen in it
     pattern = re.compile(r"\b\w+-\w+\b")
     words_with_hyphen = pattern.findall(sentence)
-    for i, keyword in enumerate(keywords_extracted):
+    for i, keyword in enumerate(keywords_extracted):                                   
         for word in words_with_hyphen:
             for single_keyword in keyword.split(" "):
                 if single_keyword in word:
                     keywords_extracted[i] = word
     
-    return list(set(keywords_extracted))
+    return list(set([keyword for keyword in keywords_extracted if len(keyword) > 1]))
 
 
 @app.route('/process_text', methods=['POST'])
