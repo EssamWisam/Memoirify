@@ -1,0 +1,23 @@
+{
+    "cells": [
+        {
+            "language": "typescript",
+            "source": [
+                "async function findAndTransform(largeString, smallString, transformFunction, callback = (res) => {}) {\n  const trimmedSmallString = smallString.trim();\n\n  // Escape special characters in the trimmedSmallString\n  const escapedSmallString = trimmedSmallString.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n\n  // Use match with a regular expression to find all occurrences\n  const matches = largeString.match(new RegExp(escapedSmallString, 'g')) || [];\n\n  if (matches.length === 0) {\n    console.log(\"No matches found\");\n    return largeString;\n  }\n\n  if (matches.length > 1) {\n    console.warn(\"Multiple matches found. Operating on the last match.\");\n  }\n\n  const lastMatch = matches[matches.length - 1];\n  const transformedValue = await transformFunction(lastMatch);\n\n  const result = largeString.replace(lastMatch, transformedValue);\n\n  callback(result);\n  return result;\n}\n\nconst smallStringo = ` The dominant paradigm of natural language generation systems hinges on probabilistic neural lan-  guage models (Radford et al., 2019; Zhang et al., 2022),`;\nconst largeStringo = ` The dominant paradigm of natural language generation systems hinges on probabilistic neural lan-  guage models (Radford et al., 2019; Zhang et al., 2022),`;\n\nfindAndTransform(largeStringo, smallStringo, toUpperCaseAsync)\n  .then(result => {\n    console.log(result);\n  });\n"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                " THE DOMINANT PARADIGM OF NATURAL LANGUAGE GENERATION SYSTEMS HINGES ON PROBABILISTIC NEURAL LAN-  GUAGE MODELS (RADFORD ET AL., 2019; ZHANG ET AL., 2022),",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
