@@ -5,7 +5,7 @@ import './editor.css'
 import { FaMagic } from "react-icons/fa";
 import { imageUploadHandler, processText } from './api';
 import { getSelectedText, findAndTransform } from './logic';
-import { $patchStyleText, $getSelectionStyleValueForProperty } from '@l exical/selection'
+import { $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
 
 import {
   toolbarPlugin,
@@ -35,14 +35,31 @@ import {
   ListsToggle,
   DiffSourceToggleWrapper,
   Button,
-  corePluginHooks
+  corePluginHooks,
+  GenericHTMLNode,
+  $isGenericHTMLNode
 } from '@mdxeditor/editor';
 import { MdInvertColors } from "react-icons/md";
 import { IconContext } from 'react-icons';
+import { $getNearestNodeOfType } from '@lexical/utils'
 
 const HighlightMode = () => {
   const [currentSelection, activeEditor] = corePluginHooks.useEmitterValues('currentSelection', 'activeEditor');
   const [highlightMode, setHighlightMode] = useState(false);
+
+  const currentHTMLNodes = React.useMemo(() => {
+    return (
+      activeEditor?.getEditorState().read(() => {
+        const selectedNodes = currentSelection?.getNodes() || []
+        const nearestNodes = []
+        for (const node of selectedNodes) {
+          if (!$isGenericHTMLNode(node))
+          nearestNodes.push($getNearestNodeOfType(node, GenericHTMLNode))
+        }
+        return nearestNodes;
+      }) || null
+    )
+  }, [currentSelection, activeEditor])
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -66,10 +83,10 @@ const HighlightMode = () => {
     if (activeEditor !== null && currentSelection !== null && highlightMode) {
       activeEditor.update(() => {
         try {
-          let current = $getSelectionStyleValueForProperty(currentSelection, 'background-color', -1);
+          let current = $getSelectionStyleValueForProperty(currentSelection, 'color', -1);
           console.log(currentSelection);
           if (current !== '#3498db') {
-            $patchStyleText(currentSelection, { 'background-color': '#3498db' });
+            $patchStyleText(currentSelection, { 'color': '#3498db' });
           } else {
             //$patchStyleText(currentSelection, { 'background-color': undefined });
           }
@@ -88,6 +105,23 @@ const HighlightMode = () => {
           style={{ cursor: 'pointer', color: highlightMode ? '#3498db' : 'inherit' }}
         />
       </IconContext.Provider>
+      <button
+        disabled={currentHTMLNodes.length === 0}
+        onClick={() => {
+          if (activeEditor !== null && currentSelection !== null) {
+            activeEditor.update(() => {
+              for (const currentHTMLNode of currentHTMLNodes) {
+                let selection = currentHTMLNode?.select()
+                currentHTMLNode?.remove()
+                selection?.insertNodes(currentHTMLNode?.getChildren() || [])
+              }
+              
+            })
+          }
+        }}
+      >
+        remove HTML nodes
+      </button>
     </>
   );
 };
