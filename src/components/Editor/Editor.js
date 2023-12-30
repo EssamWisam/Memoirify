@@ -43,36 +43,16 @@ import { MdInvertColors } from "react-icons/md";
 import { IconContext } from 'react-icons';
 import { $getNearestNodeOfType } from '@lexical/utils'
 
-const HighlightMode = ({refresh}) => {
+const HighlightMode = () => {
   const [currentSelection, activeEditor] = corePluginHooks.useEmitterValues('currentSelection', 'activeEditor');
   const [highlightMode, setHighlightMode] = useState(false);
-
-  const currentHTMLNodes = React.useMemo(() => {
-    return (
-      activeEditor?.getEditorState().read(() => {
-        const selectedNodes = currentSelection?.getNodes() || []
-        const nearestNodes = []
-        //console.log(selectedNodes[0].getTextContent())
-        for (const node of selectedNodes) {
-          if (!$isGenericHTMLNode(node))
-          {
-            //nearestNodes.push($getNearestNodeOfType(node, GenericHTMLNode))
-            nearestNodes.push(node)
-
-            //console.log("text content", selectedNodes[0].getTextContent())
-          }
-        }
-        return nearestNodes;
-      }) || null
-    )
-  }, [currentSelection, activeEditor])
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       // Check if Ctrl key is pressed and the '1' key is pressed
       if (event.ctrlKey && event.key === '1') {
         setHighlightMode((prev) => !prev);
-        //console.log("hey")
+        console.log("hey")
       }
     };
 
@@ -90,9 +70,8 @@ const HighlightMode = ({refresh}) => {
       activeEditor.update(() => {
         try {
           let current = $getSelectionStyleValueForProperty(currentSelection, 'color', -1);
-          //console.log(currentSelection);
           if (current !== '#3498db') {
-            $patchStyleText(currentSelection, { 'color': '#3498db' });
+            $patchStyleText(currentSelection, { 'background-color': '#3498db' });
           } else {
             //$patchStyleText(currentSelection, { 'background-color': undefined });
           }
@@ -111,39 +90,6 @@ const HighlightMode = ({refresh}) => {
           style={{ cursor: 'pointer', color: highlightMode ? '#3498db' : 'inherit' }}
         />
       </IconContext.Provider>
-      <button
-        disabled={currentHTMLNodes.length === 0}
-        onClick={async () => {
-          //setTimeout(() => {
-          //  refresh();
-          //   }, 100);
-          if (activeEditor !== null && currentSelection !== null) {
-            activeEditor.update(async () => {
-              for (const currentHTMLNode of currentHTMLNodes) {
-                if(currentHTMLNode.__type === 'text'){
-                  console.log(currentHTMLNode.getTextContent())
-                  let text = await processText(currentHTMLNode.getTextContent())
-                  currentHTMLNode.setTextContent(text)
-
-                    //`
-// - one <span class="color-2"> red </span> well met <span class="color-2"> men </span>
-// - two
-// - three
-//                   `)
-                }
-                //currentHTMLNode.setTextContent(currentHTMLNode.getTextContent().toUpperCase())
-                //let selection = currentHTMLNode?.select()
-                //console.log(currentHTMLNode?.getChildren())
-                //currentHTMLNode?.remove()
-                //selection?.insertNodes(currentHTMLNode?.getChildren() || [])
-              }
-            })
-          }
-          refresh()
-        }}
-      >
-        remove HTML nodes
-      </button>
     </>
   );
 };
@@ -154,12 +100,12 @@ const HighlightMode = ({refresh}) => {
 const MDEditor = ({markdown}) => {
 
     const editorRef = React.createRef();
+  
     return (
       <div id="editableDiv" style={{fontFamily:'Avenir'}} >
-        <button onClick={()=>{editorRef.current?.setMarkdown(editorRef.current?.getMarkdown().replace(/\\/g, ''))}}>Compile</button>
         <MDXEditor
           markdown={markdown}
-          onChange={(md) => {}}
+          onChange={(md) => {console.log(md)}}
           placeholder="Type some content here"
           autoFocus={true} 
           className="dark-theme dark-editor"
@@ -188,7 +134,7 @@ const MagicButton = ({ onSetMarkdown, onGetMarkdown }) => {
     );
   };
 
-const allPlugins = (diffMarkdown, editorRef, ) => [
+const allPlugins = (diffMarkdown, editorRef) => [
     toolbarPlugin({
       toolbarContents: () => (<>
         <DiffSourceToggleWrapper>
@@ -202,7 +148,7 @@ const allPlugins = (diffMarkdown, editorRef, ) => [
           <InsertTable />
           <InsertThematicBreak />
           <MagicButton onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown.replace(/<!---->/g, '<br/>')); }} onGetMarkdown={() => editorRef.current?.getMarkdown()}/> 
-          <HighlightMode refresh={()=>editorRef.current?.setMarkdown(editorRef.current?.getMarkdown().replace(/\\/g, ''))} />
+          <HighlightMode/>
         </DiffSourceToggleWrapper>
       </>)
     }),
