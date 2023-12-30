@@ -69,13 +69,17 @@ function isBlockElement(element) {
  * @returns {string} The transformed string.
  */
 export async function findAndTransform(largeString, smallString, transformFunction, callback = (res) => {}) {
-  const trimmedSmallString = smallString.trim();
 
-  // Escape special characters in the trimmedSmallString
+  const trimmedSmallString = (smallString.trim()).replace(/[<>]/g, '');
+
+  // Escape special characters in the trimmedSmallString 
   const escapedSmallString = trimmedSmallString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+  // Remove backslashes from largeString (not spotted in highlighted text)
+  const stringWithoutBackslashes = (largeString.replace(/\\/g, '')).replace(/[<>]/g, '');
+
   // Use match with a regular expression to find all occurrences
-  const matches = largeString.match(new RegExp(escapedSmallString, 'g')) || [];
+  const matches = stringWithoutBackslashes.match(new RegExp(escapedSmallString, 'g')) || [];
 
   if (matches.length === 0) {
     console.log("No matches found");
@@ -89,8 +93,9 @@ export async function findAndTransform(largeString, smallString, transformFuncti
   const lastMatch = matches[0];
   const transformedValue = await transformFunction(lastMatch);
 
-  const result = largeString.replace(lastMatch, transformedValue);
+  const result = stringWithoutBackslashes.replace(lastMatch, transformedValue);
 
   callback(result);
   return result;
 }
+
