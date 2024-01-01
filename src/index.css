@@ -1,5 +1,13 @@
 
 body {
     background-color: #1d1d1d;
+    overflow-x: hidden;
     
+}
+
+._imageWrapper_utjas_834 {
+    max-width: 90% !important;
+    img {
+    max-width: 100% !important;
+    }
 }

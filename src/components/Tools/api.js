@@ -10,13 +10,12 @@ export async function imageUploadHandler(image) {
     formData.append('image', image)
     // send the file to your server and return 
     // the URL of the uploaded image in the response
-    const response = await fetch('./uploads', {
+    const response = await fetch('http://127.0.0.1:5001/uploads', {
       method: 'POST',
       body: formData
     })
   
     const json = (await response.json())
-    alert(json)
-    return json.url
+    return 'http://127.0.0.1:5001/' + json.url
   }
   
