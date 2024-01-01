@@ -5,6 +5,10 @@
       padding-inline-start: 20px;
       }
   }
+
+  ._rootContentEditableWrapper_utjas_1006 {
+    margin: auto;
+  }
   
   .color-1 {
     color: #FFFCD1;
@@ -83,3 +87,9 @@
     background-color: #3d3d3d;
   }
   
+
+
+  .rc-slider-handle {
+    background-color: #96dbfa !important;
+    opacity: 1.0 !important;
+  }
