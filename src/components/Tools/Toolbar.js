@@ -28,12 +28,10 @@ import {
   } from '@mdxeditor/editor';
 
 import { HighlightMode } from './HighlightMode';
-import { PaperToggle } from './PaperToggle';
 import { WidthSlider} from './WidthSlider';
 import { MagicButton } from '../Editor/Editor';
 
-
-export const allPlugins = (diffMarkdown, editorRef,) => [
+export const allPlugins = (diffMarkdown, editorRef, markdown, setMarkdown, key, setKey) => [
     toolbarPlugin({
       toolbarContents: () => (<>
         <DiffSourceToggleWrapper>
@@ -44,10 +42,7 @@ export const allPlugins = (diffMarkdown, editorRef,) => [
           <InsertImage />
           <InsertTable />
           <InsertThematicBreak />
-          <MagicButton onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown.replace(/<!---->/g, '<br/>')); }} onGetMarkdown={() => editorRef.current?.getMarkdown()} />
           <HighlightMode  />
-          <WidthSlider />
-          <PaperToggle />
         </DiffSourceToggleWrapper>
       </>)
     }),

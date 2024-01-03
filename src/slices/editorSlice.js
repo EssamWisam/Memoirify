@@ -7,14 +7,21 @@ const editorCollection = createSlice({
   initialState: {                           // 2. Define your state and initial values here
 
     showPage: false,
-
+    fileContent: null,
+    isNewFile: false
   },
 
   reducers: {                              // 3. Define functions that manipulate state
 
-    setShowPage: (state, action) => {
+    SetShowPage: (state, action) => {
       state.showPage = action.payload;
     },
+    SetFileContent: (state, action) => {
+      state.fileContent = action.payload;
+    },
+    SetIsNewFile: (state, action) => {
+      state.isNewFile = action.payload;
+    }
 
   },
 
@@ -22,7 +29,13 @@ const editorCollection = createSlice({
 
 
 export const selectShowPage = (state) => state.editorCollection.showPage;
+export const selectFileContent = (state) => state.editorCollection.fileContent;
+export const selectIsNewFile = (state) => state.editorCollection.isNewFile;
 
-export const { setShowPage } = editorCollection.actions;
+export const { SetShowPage } = editorCollection.actions;
+export const { SetFileContent } = editorCollection.actions;
+export const { SetIsNewFile } = editorCollection.actions;
+
+
 
 export default editorCollection.reducer;      // 5. Export the reducer to the store

@@ -1,3 +1,28 @@
+.rc-slider-rail, .rc-slider-track {
+    height: 3px !important;
+}
+
 .rc-slider {
-    height: 9px !important;
+    padding: 13px 0 !important;
+}
+
+.rc-slider-track {
+    background-color: rgb(220, 220, 220) !important;
+}
+
+.rc-slider-rail {
+    background-color: rgb(130, 130, 130) !important;
+}
+
+.rc-slider-handle {
+    width: 11px !important;
+    height: 11px !important;
+    margin-top: -4px !important;
+    background-color: rgb(220, 220, 220) !important;
+    opacity: 1.0 !important;
+    border: solid 2px rgb(220, 220, 220) !important;
+}
+
+._toolbarRoot_utjas_145 {
+    top: 45px !important;
 }

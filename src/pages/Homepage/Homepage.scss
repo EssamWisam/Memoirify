@@ -1,0 +1,103 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;700&family=Livvic:wght@900&family=Wendy+One&display=swap');
+.logo-small {
+  font-family: Eczar;
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-left:0.7rem;
+}
+.text {      
+  font-weight: 700;
+  font-size: 5rem;
+  color: #fff;
+  border: 3px solid #fff;
+  padding: 1rem 2rem;
+  font-family: Eczar;
+  margin: 0.5rem;
+}
+
+.gradient {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 99.5vh;
+  width: 100vw;
+
+  /* Colors generated on: https://colorhunt.co/palette/179481 */
+  background: linear-gradient(45deg, #234499, #106069, #222730, #234499);
+  background-size: 300% 300%;
+  animation: colors 10s ease infinite;
+}
+
+@keyframes colors {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (max-width: 600px) {
+  .text {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+  }
+}
+
+@import url('https://fonts.googleapis.com/css?family=Raleway:500');
+
+// Palette
+$blue: #dddddd;
+$dark-blue: #fff;
+$light-peach: #ffecd9;
+$peach: #fff;
+$sand: #bdbdbd;
+$white: #1d1d1d;
+
+
+.button {
+  -webkit-appearance: none;
+  background: -webkit-gradient(
+    to right,
+    $blue 0%,
+    $sand 50%,
+    $dark-blue 100%
+  );
+  background: linear-gradient(
+    to right,
+    $blue 0%,
+    $sand 50%,
+    $dark-blue 100%
+  );
+  background-size: 500%;
+  border: none;
+  border-radius: 5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  color: $white;
+  cursor: pointer;
+  font: 1.0em Raleway, sans-serif;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.05em;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: background-position 0.5s, transform 0.5s;
+  padding: 1rem 1rem;
+  margin: 1rem;
+}
+
+.button:hover {
+  background-position: 100%;
+  transform: scale(1.05);
+}
+

@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 import { MDEditor } from '../../components/Editor/Editor';
 
 
-function EditorPage({markdown}) {
+function EditorPage({initMarkdown}) {
   return (
-    <MDEditor markdown={markdown}/>
+    <MDEditor initMarkdown={initMarkdown}/>
   )
 }
 

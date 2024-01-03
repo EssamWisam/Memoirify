@@ -76,7 +76,10 @@ export async function findAndTransform(largeString, smallString, transformFuncti
   const escapedSmallString = trimmedSmallString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   // Remove backslashes from largeString (not spotted in highlighted text)
-  const stringWithoutBackslashes = (largeString.replace(/\\/g, '')).replace(/[<>]/g, '');
+  const stringWithoutBackslashes = (largeString.trim().replace(/\\/g, ''));
+
+  console.log("A:" + trimmedSmallString)
+  console.log("B:" + stringWithoutBackslashes)
 
   // Use match with a regular expression to find all occurrences
   const matches = stringWithoutBackslashes.match(new RegExp(escapedSmallString, 'g')) || [];

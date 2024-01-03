@@ -4,7 +4,8 @@ import { corePluginHooks, } from '@mdxeditor/editor';
 
 import { $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
 
-import { MdInvertColors } from "react-icons/md";
+import { PiHighlighterCircle } from "react-icons/pi";
+
 import { IconContext } from 'react-icons';
 
 
@@ -57,7 +58,7 @@ export const HighlightMode = () => {
     return (
       <>
         <IconContext.Provider value={{ size: '1.4em', style: { verticalAlign: 'middle' } }}>
-        <MdInvertColors
+        <PiHighlighterCircle
           onClick={() => setHighlightMode((prev) => !prev)}
           style={{ cursor: 'pointer', color: highlightMode ? '#ffffff' : 'inherit',}}
         />

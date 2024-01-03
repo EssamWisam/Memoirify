@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
-import './index.css'
-import EditorPage from './pages/EditorPage/EditorPage'
-
+import React, { useEffect } from 'react';
+import './index.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import EditorPage from './pages/EditorPage/EditorPage';
+import HomePage from './pages/Homepage/Homepage';
 
 function App() {
-
-  const markdown = `
+  const initMarkdown = `
   Neural language models are probabilistic models of human text. They are predom-
   inantly trained using maximum likelihood estimation (MLE), which is equivalent
   to minimizing the forward cross-entropy between the empirical data distribution
@@ -26,10 +26,14 @@ function App() {
   ibration method for enhancing large-scale pre-trained language models. Our code
   and data are available at ab. 
   `
-
   return (
-    <EditorPage markdown={markdown}/>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/edit" element={<EditorPage initMarkdown={initMarkdown} />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

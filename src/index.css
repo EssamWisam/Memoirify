@@ -1,9 +1,10 @@
 
 body {
-    background-color: #1d1d1d;
+    background: #1d1d1d;
     overflow-x: hidden;
-    
+    margin: 0px;
 }
+
 
 ._imageWrapper_utjas_834 {
     max-width: 90% !important;
@@ -11,3 +12,10 @@ body {
     max-width: 100% !important;
     }
 }
+
+a {
+    color: #00b0b0;
+}
+
+
+
