@@ -1,4 +1,5 @@
 
+import { init, saveSet } from '../../utils';
 
 /**
  * Sends text to a server for processing and retrieves the processed text.
@@ -31,4 +32,22 @@ export async function processText(inputText) {
 
 
 
+  export const handleFileUpload = async (event, setPdfUrl) => {
+    const file = event.target.files[0];
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('http://127.0.0.1:5001/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      saveSet(setPdfUrl, 'pdfUrl', `http://127.0.0.1:5001/get_pdf/${data.filename}`);
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+    }
+  };
 

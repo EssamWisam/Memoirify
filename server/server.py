@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
@@ -9,13 +9,12 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['UPLOAD_FOLDER'] = 'uploads'  # Folder to store uploaded images
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}  # Allowed file extensions
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}  # Allowed file extensions
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def generate_random_filename(filename):
     random_filename = str(uuid.uuid4()) + secure_filename(filename)
@@ -58,7 +57,6 @@ def upload_file():
 
         # Return the URL in the response
         return jsonify({'url': uploaded_url})
-
     else:
         return jsonify({'error': 'Invalid file format'})
 
@@ -67,6 +65,43 @@ def upload_file():
 @cross_origin()
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+def allowed_pdf(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ['pdf']
+
+
+@app.route('/upload', methods=['POST'])
+def upload_pdf():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and allowed_pdf(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return jsonify({'filename': filename}), 201
+    else:
+        return jsonify({'error': 'Invalid file type'}), 400
+
+
+@app.route('/get_pdf/<filename>')
+def get_pdf(filename):
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    if os.path.exists(filepath):
+        return send_file(filepath)
+    else:
+        return jsonify({'error': 'File not found'}), 404
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ['pdf']
+
 
 
 import string

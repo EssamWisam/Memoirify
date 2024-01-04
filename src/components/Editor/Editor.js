@@ -7,14 +7,13 @@ import './editor.css'
 import { RiMagicLine } from "react-icons/ri";
 import { MdHomeFilled } from "react-icons/md";
 
-import { processText } from './api';
+import { processText, handleFileUpload } from './api';
 import { getSelectedText, findAndTransform } from './logic';
 
 import 'rc-slider/assets/index.css';
 import SplitterLayout from 'react-splitter-layout';
 import 'react-splitter-layout/lib/index.css';
 
-import { Button } from '@mdxeditor/editor';
 import { selectShowPage } from '../../slices/editorSlice';
 
 import { allPlugins } from '../Tools/Toolbar';
@@ -30,6 +29,22 @@ import { DownloadButton }
 import { PaperToggle } from '../Tools/PaperToggle';
 import { WidthSlider } from '../Tools/WidthSlider'
 
+
+export const PaperViewer = ({pdfUrl, setPdfUrl}) => {
+
+  return (
+    <div style={{ minHeight: '100vh', flexBasis: '30%', display:'flex', justifyContent:'center', alignItems:'center', flexDirection:'column' }}>
+    {pdfUrl && <iframe src={pdfUrl} title="Uploaded PDF" style={{ width: '100%', minHeight: '100vh' }}></iframe>}
+      <label for="file-upload" style={{color:'white', backgroundColor:'#00b0b0', cursor:'pointer', padding:'0.5rem', display:'block',
+       margin:'0.7rem', borderRadius:'20px', minWidth:'10rem', textAlign:'center'}}>
+         {(pdfUrl !== '') ? 'Change PDF' : 'Upload PDF'}
+      </label>
+      <input onChange={(e) => handleFileUpload(e, setPdfUrl)} id="file-upload" type="file" style={{display:'none'}}/>
+    </div>
+  )
+
+}
+
 export const MDEditor = ({ initMarkdown }) => {
   const dispatch = useDispatch();
 
@@ -43,6 +58,7 @@ export const MDEditor = ({ initMarkdown }) => {
   const setFileContent = (s) => dispatch(SetFileContent(s))
 
   const [key, setKey] = React.useState(0);
+  const [pdfUrl, setPdfUrl] = React.useState(init('pdfUrl', ''));
 
   React.useEffect(() => {
     if (fileContent != null) {
@@ -58,8 +74,10 @@ export const MDEditor = ({ initMarkdown }) => {
       saveSet(setMarkdown, 'currentMD', ' ');
       setKey(key + 1);
       setIsNewFile(false);
+      saveSet(setPdfUrl, 'pdfUrl', ``);
     }
   }, [isNewFile]);
+
 
 
   // use effect trigger only upon load: check if route is edit/new and in this case setMarkdown('')
@@ -82,7 +100,7 @@ export const MDEditor = ({ initMarkdown }) => {
           </div>
           <MDXEditor
             markdown={markdown}
-            onChange={(md) => { saveSet(setMarkdown, 'currentMD', md); console.log(editorRef.current?.getMarkdown()) }}
+            onChange={(md) => { saveSet(setMarkdown, 'currentMD', md.replace(/<!---->/g, '<br/>')); }}
             placeholder="Type some content here"
             autoFocus={true}
             className="dark-theme dark-editor"
@@ -91,9 +109,7 @@ export const MDEditor = ({ initMarkdown }) => {
             plugins={allPlugins(initMarkdown, editorRef, markdown, (md) => { saveSet(setMarkdown, 'currentMD', md.replace(/<!---->/g, '<br/>')) }, key, setKey)} />
         </div>
         {showPage &&
-          <div style={{ minHeight: '100vh', flexBasis: '30%' }}>
-            <iframe title="abc" src="./pdfs/EMO.pdf" style={{ width: '100%', minHeight: '100vh' }} />
-          </div>
+          <PaperViewer pdfUrl={pdfUrl} setPdfUrl={setPdfUrl}/>
         }
       </SplitterLayout>
     </div>
@@ -106,10 +122,6 @@ export const MagicButton = ({ onSetMarkdown, markdown, setMarkdown }) => {
     let wholeText = markdown;
     try {
       const result = await findAndTransform(wholeText, selectedText, processText, onSetMarkdown);
-      //onSetMarkdown(onGetMarkdown());
-      //if(result) {
-      //setKey(key + 1);
-      //}
     } catch (error) {
       console.error(error);
     }
