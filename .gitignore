@@ -26,3 +26,5 @@ sandbox.ipynb
 sandbox.nnb
 
 /server/uploads
+server/__pycache__/logic.cpython-39.pyc
+server/__pycache__/logic.cpython-38.pyc
