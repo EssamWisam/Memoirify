@@ -30,7 +30,7 @@ import {
 import { HighlightMode } from './HighlightMode';
 
 
-export const allPlugins = (diffMarkdown, editorRef, markdown, setMarkdown, key, setKey) => [
+export const allPlugins = (diffMarkdown) => [
     toolbarPlugin({
       toolbarContents: () => (<>
         <DiffSourceToggleWrapper>

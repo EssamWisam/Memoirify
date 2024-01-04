@@ -66,17 +66,17 @@ export const MDEditor = ({ initMarkdown }) => {
         <div id="editableDiv" style={{ fontFamily: 'Avenir', flexBasis: '80%' }} >
           <ExtraToolbar
           markdown={markdown} setMarkdown={setMarkdown}
-          onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown.replace(/<!---->/g, '<br/>')); }}
+          onSetMarkdown={(newMarkdown) => { editorRef.current?.setMarkdown(newMarkdown.replace(/<!---->/g, '<br/>').replace(/<span class="[^"]*" \/>/g, '')); }}
           />
           <MDXEditor
             markdown={markdown}
-            onChange={(md) => { saveSet(setMarkdown, 'currentMD', md.replace(/<!---->/g, '<br/>')); }}
+            onChange={(md) => { saveSet(setMarkdown, 'currentMD', md.replace(/<!---->/g, '<br/>').replace(/<span class="[^"]*" \/>/g, '')); }}
             placeholder="Type some content here"
             autoFocus={true}
             className="dark-theme dark-editor"
             ref={editorRef}
             contentEditableClassName="prose max-w-full font-sans"
-            plugins={allPlugins(initMarkdown, editorRef, markdown, (md) => { saveSet(setMarkdown, 'currentMD', md.replace(/<!---->/g, '<br/>')) }, key, setKey)} />
+            plugins={allPlugins(initMarkdown)} />
         </div>
         {showPage &&
           <PaperViewer pdfUrl={pdfUrl} setPdfUrl={setPdfUrl}/>

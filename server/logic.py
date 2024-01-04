@@ -64,7 +64,7 @@ def get_bullets_from_sents(sentences, remove_refs=True):
     indent_state = 1
     for i, sentence in enumerate(sentences):
         if remove_refs: sentence = remove_et_al_pattern(sentence)
-        sentence = correct_hyphenation(sentence)
+        sentence = correct_hyphenation(re.sub(r'', '', sentence))
         colored_sentence, keywords = colorize(sentence)
         if i == 0 : init_keywords = keywords
         overlap_state = get_keyword_overlap(keywords, prev_keywords, init_keywords, i)
