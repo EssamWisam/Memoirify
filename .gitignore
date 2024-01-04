@@ -24,3 +24,5 @@ yarn-error.log*
 
 sandbox.ipynb
 sandbox.nnb
+
+/server/uploads
