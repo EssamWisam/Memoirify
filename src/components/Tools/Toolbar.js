@@ -28,8 +28,7 @@ import {
   } from '@mdxeditor/editor';
 
 import { HighlightMode } from './HighlightMode';
-import { WidthSlider} from './WidthSlider';
-import { MagicButton } from '../Editor/Editor';
+
 
 export const allPlugins = (diffMarkdown, editorRef, markdown, setMarkdown, key, setKey) => [
     toolbarPlugin({
