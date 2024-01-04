@@ -50,7 +50,7 @@ export const MDEditor = ({ initMarkdown }) => {
 
   React.useEffect(() => {
     if (isNewFile) {
-      saveSet(setMarkdown, 'currentMD', ' ');
+      saveSet(setMarkdown, 'currentMD', '');
       setKey(key + 1);
       setIsNewFile(false);
       saveSet(setPdfUrl, 'pdfUrl', ``);

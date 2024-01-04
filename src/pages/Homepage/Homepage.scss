@@ -1,5 +1,6 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;700&family=Livvic:wght@900&family=Wendy+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;700&family=Livvic:wght@900&family=Oxygen&family=Wendy+One&display=swap');
+
 .logo-small {
   font-family: Eczar;
   font-weight: 500;
@@ -80,7 +81,7 @@ $white: #1d1d1d;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   color: $white;
   cursor: pointer;
-  font: 1.0em Raleway, sans-serif;
+  font: 1.0em 'Oxygen';
   font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
