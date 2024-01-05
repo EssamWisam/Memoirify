@@ -31,7 +31,7 @@ Note that streamlining relies on text being well written for good results (e.g.,
 This project is currently a work in progress with an anticipated slow down. Some limitations that I may address in the long-term are:
 - Prompt user for file name so it doesn't download as `markdown.md`
 - Eliminate Regex from the streamline implementation (inefficient)
-- Project should be dockerized for easier execution
+- Project should be dockerized for easier execution (and possibly be deployed)
 - Streamlining may fail if the text is not raw (e.g., highlighted or has links) or has special characters (e.g., >)
 - Current highlighting is a little buggy (e.g., highlighting backwards). Nontrivial to improve but got to keep trying.
 - Introduce LLMs for better streamlining (especially indenting), summarization, restructuring and other features
