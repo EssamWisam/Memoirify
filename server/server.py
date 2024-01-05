@@ -9,12 +9,11 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['UPLOAD_FOLDER'] = 'uploads'  # Folder to store uploaded images
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}  # Allowed file extensions
 
 # check image is valid type
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    print(filename)
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ['png', 'jpg', 'jpeg', 'gif']
 
 # get random filename in case of collisions
 def generate_random_filename(filename):
@@ -36,14 +35,13 @@ def upload_file():
         return jsonify({'error': 'No file part'})
 
     file = request.files['image']
-
     # If the user does not select a file, the browser might
     # submit an empty part without a filename
     if file.filename == '':
         return jsonify({'error': 'No selected file'})
-    
+
     # Check if the file has an allowed extension
-    if file and allowed_file(file.filename):
+    if file:
         # Secure the filename to prevent malicious attacks
         filename = secure_filename(file.filename)
 
@@ -55,7 +53,6 @@ def upload_file():
 
         # Construct the URL for the uploaded image
         uploaded_url = f'/uploads/{filename}'
-
         # Return the URL in the response
         return jsonify({'url': uploaded_url})
     else:

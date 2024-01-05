@@ -9,7 +9,6 @@ import SplitterLayout from 'react-splitter-layout';
 import 'react-splitter-layout/lib/index.css';
 import { PaperViewer } from '../Tools/PaperViewer';
 import { ExtraToolbar } from '../Tools/ExtraToolbar';
-import { MagicButton } from '../Tools/MagicButton';
 
 import { selectShowPage } from '../../slices/editorSlice';
 
