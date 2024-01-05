@@ -1,3 +1,5 @@
+<img width="970" alt="image" src="https://github.com/EssamWisam/Memoirify/assets/49572294/a59e5758-4f6c-4637-bf68-b856c06ee48a">
+
 # 📃 Memoirify
 
 
