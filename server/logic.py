@@ -11,7 +11,8 @@ nltk.download('stopwords')  # Download the punkt tokenizer data if not already i
 rake_nltk_var = Rake()
 
 # converts a paragraph to sentences
-def get_sentences(paragraph):
+def get_sentences(paragraph, remove_refs=True):
+    if remove_refs: paragraph = remove_et_al_pattern(paragraph)
     punkt_param = PunktParameters()
     punkt_param.abbrev_types = set(['dr', 'vs', 'mr', 'mrs', 'prof', 'inc', 'eq', 'eqn', 'sec', 'sect', 'et al', 'i.e', 'e.g', 'vs', 'etc', 'fig', 'ref', 'vol', 'cf'])
     sentence_splitter = PunktSentenceTokenizer(punkt_param)
@@ -57,13 +58,12 @@ def get_bullet(sentence, level):
 
 
 # given a list of sentences return a list of colored bullets
-def get_bullets_from_sents(sentences, remove_refs=True):
+def get_bullets_from_sents(sentences):
     bullets_text = ""
     init_keywords = []
     prev_keywords = []
     indent_state = 1
     for i, sentence in enumerate(sentences):
-        if remove_refs: sentence = remove_et_al_pattern(sentence)
         sentence = correct_hyphenation(re.sub(r'', '', sentence))
         colored_sentence, keywords = colorize(sentence)
         if i == 0 : init_keywords = keywords
@@ -79,7 +79,8 @@ def get_bullets_from_sents(sentences, remove_refs=True):
             init_keywords = keywords
         if len(sentences) == 2:
             indent_state = 1
-        
+        print(overlap_state, indent_state)
+        prev_keywords = keywords
         bullets_text += get_bullet(colored_sentence, indent_state)
     return bullets_text
 
@@ -88,7 +89,8 @@ def get_keyword_overlap(keywords, prev_keywords, init_keywords, i):
     split_prev_keywords = [word.lower() for keyword in prev_keywords for word in keyword.split()]
     split_init_keywords = [word.lower() for keyword in init_keywords for word in keyword.split()]
     split_keywords = [word.lower() for keyword in keywords for word in keyword.split()]
-
+    print(split_keywords)
+    print(prev_keywords, end="\n\n")
     # Check the condition
     if any(word in split_prev_keywords for word in split_keywords):
         return 'previous'
@@ -99,13 +101,13 @@ def get_keyword_overlap(keywords, prev_keywords, init_keywords, i):
 
 
 # color a given sentence given existing keywords
-def colorize(sentence, classes=["color-1", "color-2", "color-3", "color-4"]):
+def colorize(sentence, colors=["#FFFCD1", "#93FCFC", "#92FCDC", "#F4B5FA"]):
     #sentence = sentence.strip().lstrip(string.punctuation).strip()
     keywords_extracted = get_keywords(sentence)
     for i, keyword in enumerate(keywords_extracted):
         if keyword.casefold() in sentence.casefold():
             pattern = re.compile(rf'\b{re.escape(keyword)}\b(?!=)', flags=re.IGNORECASE)
-            sentence = re.sub(pattern, lambda match: f"<span class='{classes[(i+1) % 4]}'>{match.group()}</span>", sentence)
+            sentence = re.sub(pattern, lambda match: f"<span style='color:{colors[(i+1) % 4]}'>{match.group()}</span>", sentence)
     return sentence, keywords_extracted
 
 # get keywords in a sentence
